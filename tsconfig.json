@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+	"removeComments": true,
+	"esModuleInterop": true,
+	"target": "ES6",
+	"module": "commonjs",
+	"outDir": "dist"
+    }
+}

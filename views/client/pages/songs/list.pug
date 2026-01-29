@@ -1,0 +1,18 @@
+extends ../../layouts/default
+include ../../mixins/boxHead
+
+block main
+  +box-head(pageTitle)
+  .row 
+    each song in songs
+      .col-4.mb-3
+        div(class="song-item")
+          div(class="inner-image")
+            a(href=`/songs/detail/${song.slug}`)
+              img(src=song.avatar)
+          div(class="inner-content")
+            div(class="inner-title")
+              a(href=`/songs/detail/${song.slug}`) #{song.title}
+            div(class="inner-singer") <i class="fa-solid fa-microphone-lines"></i> #{song.singerInfo.fullName}
+            div(class="inner-likeCount") <i class="fa-solid fa-thumbs-up"></i> #{song.likeCount}
+            dic(class="inner-releaseDate") <i class="fa-regular fa-clock"></i> Hom nay
