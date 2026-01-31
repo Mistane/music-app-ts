@@ -38,6 +38,8 @@ ul {
 
 .nav-list {
   margin-right: 20px;
+  gap: 20px;
+  display: flex;
 }
 
 .nav-item a {
@@ -111,4 +113,77 @@ ul {
 .inner-likeCount i,
 .inner-releaseDate i {
   margin-right: 6px;
+}
+
+/* -----------------register form------------------------- */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-wrapper {
+  width: 420px;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-control {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #6a5acd;
+  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.2);
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #6a5acd;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-submit:hover {
+  background: #5a4bcf;
+  transform: translateY(-1px);
+}
+
+[msg-display] {
+  display: inline-block;
+  width: 100%;
+  padding: 2px 4px;
 }

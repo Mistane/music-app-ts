@@ -1,0 +1,24 @@
+extends ../../layouts/default
+include ../../mixins/boxHead
+
+block main
+  .form-container
+    div(class="auth-wrapper mt-3")
+      form(
+          class="form-register" id="form-login"
+          action="/users/login"
+          method="POST"
+        )
+        +box-head("Đăng nhập")
+        small(msg-display)
+
+        div(class="form-group")
+          label(for="email") Email
+          input(class="form-control" type="email" id="email" name="email")
+
+        div(class="form-group")
+          label(for="password") Mật khẩu
+          input(class="form-control" type="password" id="password" name="password")
+
+        button(class="btn btn-primary btn-submit" type="submit") Gửi
+

@@ -1,14 +1,15 @@
 extends ../../layouts/default
 include ../../mixins/boxHead
 block main
-  +box-head(pageTitle)
+  .container
+    +box-head(pageTitle)
 
-  .row
-    each topic in topics
-      .col-4.mb-3
-        div(class="card")
-          img(src=topic.avatar)
-          div(class="card-body")
-            h5(class="card-title") #{topic.title}
-            p(class="card-text") #{topic.description}
-            a(href=`/songs/${topic.slug}` class="btn btn-primary") Xem chi tiết
+    .row
+      each topic in topics
+        .col-4.mb-3
+          div(class="card")
+            img(src=topic.avatar)
+            div(class="card-body")
+              h5(class="card-title") #{topic.title}
+              p(class="card-text") #{topic.description}
+              a(href=`/songs/${topic.slug}` class="btn btn-primary") Xem chi tiết
