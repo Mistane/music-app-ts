@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
 import { ValidationError, validationResult } from "express-validator";
+import {
+  generateAccessToken,
+  genrateRefreshToken,
+} from "../../helpers/tokenHelper";
 import User from "../../models/user.model";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { hash } from "node:crypto";
 const saltRounds = 10;
+
+type InfoField = {
+  fullName: string;
+  email: string;
+  password: string;
+};
 
 class Controller {
   // [GET] /users/register
@@ -23,15 +31,10 @@ class Controller {
         .json({ error: "Không nhập đủ thông tin yêu cầu!" });
     }
 
-    type registerField = {
-      fullName: string;
-      email: string;
-      password: string;
-    };
-
+    type registerField = InfoField;
     const { fullName, email, password }: registerField = req.body;
-    const userExist = await User.findOne({ fullName, email });
-    if (userExist) return res.status(409).json({ error: "User đã tồn tại!" });
+    const user = await User.findOne({ fullName, email });
+    if (user) return res.status(409).json({ error: "User đã tồn tại!" });
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const newUser = new User({
@@ -61,33 +64,76 @@ class Controller {
         .json({ error: "Không nhập đủ thông tin yêu cầu!" });
     }
 
-    type loginField = {
-      email: string;
-      password: string;
-    };
+    type loginField = Pick<InfoField, "email" | "password">;
 
     const { email, password }: loginField = req.body;
-    const userExist = await User.findOne({ email });
-    if (!userExist)
+    const user = await User.findOne({ email });
+    if (!user)
       return res.status(409).json({ error: "Nhập sai email hoặc mật khẩu!" });
-    let checkPasswordCorrect = await bcrypt.compare(
-      password,
-      userExist.password,
-    );
+    let checkPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!checkPasswordCorrect)
       return res.status(409).json({ error: "Nhập sai email hoặc mật khẩu!" });
 
-    const token = jwt.sign(
-      {
-        userId: userExist.id,
-        fullName: userExist.fullName,
-      },
-      process.env.SECRET_KEY,
-    );
+    const data = {
+      userId: user.id,
+      username: user.fullName,
+    };
+
+    const accessToken = generateAccessToken(data);
+    const refreshToken = genrateRefreshToken(data);
+
+    user.refreshTokens.push(refreshToken);
+    await user.save();
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: false,
+    });
+
     return res.status(201).json({
       msg: "Đăng nhập thành công",
-      token,
+      accessToken,
     });
+  }
+
+  // [GEt] /users/logout
+  async logout(req: Request, res: Response) {
+    const token = req.cookies["refreshToken"];
+    if (!token) return res.sendStatus(204);
+
+    const user = await User.findOne({ refreshTokens: token });
+    if (user) {
+      user.refreshTokens = user.refreshTokens.filter((t) => t !== token);
+      await user.save();
+    }
+
+    res.clearCookie("refreshToken");
+    res.redirect("/users/login");
+  }
+
+  // [POST] /users/token/refresh
+  async refresh(req: Request, res: Response) {
+    const token = req.cookies["refreshToken"];
+    if (!token) return res.sendStatus(401);
+
+    const user = await User.findOne({ refreshTokens: token });
+    if (!user) return res.sendStatus(403);
+
+    user.refreshTokens = user.refreshTokens.filter((t) => t !== token);
+    const data = {
+      userId: user.id,
+      username: user.fullName,
+    };
+
+    const newAccessToken = generateAccessToken(data);
+    const newRefreshToken = genrateRefreshToken(data);
+
+    user.refreshTokens.push(newRefreshToken);
+    await user.save();
+    res.cookie("refreshToken", newRefreshToken, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    return res.json({ accessToken: newAccessToken });
   }
 }
 

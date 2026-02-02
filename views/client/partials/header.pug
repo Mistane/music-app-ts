@@ -10,9 +10,18 @@ header.header
             a(href="/") Trang chủ
           li.nav-item
             a(href="/topics")  Chủ đề
-        div
           li.nav-item
-            a(href="/users/register")  Đăng kí 
-          li.nav-item
-            a(href="/users/login")  Đăng nhập 
+            button(class="btn btn-primary" test-btn) test refresh
+        if(!user)
+          div
+            li.nav-item
+              a(href="/users/register")  Đăng kí 
+            li.nav-item
+              a(href="/users/login")  Đăng nhập 
+        else
+          div
+            li.nav-item
+              a(href="/users/detail") #{user.fullName}
+            li.nav-item
+              a(href="/users/logout") Đăng xuất
         

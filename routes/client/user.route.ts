@@ -15,5 +15,6 @@ router.post(
   userMiddleware.loginValidationRules,
   userController.loginPost,
 );
-
+router.get("/logout", userController.logout);
+router.post("/token/refresh", userController.refresh);
 export default router;

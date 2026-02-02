@@ -1,3 +1,5 @@
+import authFetch from "./authFetch.js";
+
 const formRegister = document.querySelector("#form-register");
 if (formRegister) {
   formRegister.addEventListener("submit", async (e) => {
@@ -64,7 +66,24 @@ if (formLogin) {
       displayMessageField.innerText = data.error;
     } else {
       console.log(data);
+      localStorage.setItem("token", data.accessToken);
       window.location.href = "/topics";
     }
+  });
+}
+
+// -----------------------------------------------------------
+const btn = document.querySelector("[test-btn]");
+if (btn) {
+  btn.addEventListener("click", async (e) => {
+    const token = localStorage.getItem("token");
+    const data = await authFetch("/test", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `bearer ${token}`,
+      },
+    });
+    console.log("Data tra ve khi fetch: " + data);
   });
 }
