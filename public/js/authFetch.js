@@ -1,12 +1,12 @@
-const tryAuthFetch = async (url, options) => {
+const tryAuthFetch = async (url, options = {}) => {
   const res = await fetch(url, options);
   console.log(options);
   if (res.status === 401 || res.status === 403) {
     console.log("uh oh het han token roi");
-    const response = await fetch("/users/token/refresh");
+    const response = await fetch("/users/token/refresh", { method: "post" });
     if (response.status === 401 || response.status === 403) {
       console.log("REFRESH TOKEN HET HAN");
-      return (window.location.href = "/users/login");
+      return { error: "REQUIRE_LOGIN" };
     } else {
       const data = await response.json();
       const newAccessToken = data.accessToken;

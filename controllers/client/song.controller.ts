@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Singer from "../../models/singer.model";
 import Topic from "../../models/topic.model";
 import Song from "../../models/song.model";
+import Like from "../../models/like.model";
+import Favorite from "../../models/favorite.model";
 
 class Controller {
   //[GET] /songs
@@ -36,6 +38,76 @@ class Controller {
       pageTitle: `Danh sách bài hát thuộc ${topic.title}`,
       songs,
     });
+  }
+
+  // [GET] /songs/detail/:slugSong
+  async detail(req: Request, res: Response) {
+    const slugSong = req.params.slugSong;
+    const song = await Song.findOne({ deleted: false, slug: slugSong });
+    const singerInfo = await Singer.findOne({
+      deleted: false,
+      _id: song.singerId,
+    });
+
+    let checkUserLiked = false;
+    let checkUserFavorite = false;
+    const user = res.locals.user;
+    if (user) {
+      console.log("USer da log in");
+      const liked = await Like.findOne({ userId: user.id, songId: song.id });
+      console.log(liked);
+      if (liked) {
+        checkUserLiked = true;
+      }
+
+      const favorite = await Favorite.findOne({
+        userId: user.id,
+        songId: song.id,
+      });
+      if (favorite) {
+        checkUserFavorite = true;
+      }
+    }
+
+    console.log("user like hay chua : " + checkUserLiked);
+    const topic = await Topic.findOne({
+      deleted: false,
+      _id: song.topicId,
+    }).select("title");
+
+    song["topic"] = topic;
+    song["singerInfo"] = singerInfo;
+    console.log(song);
+    res.render("./client/pages/songs/detail", {
+      pageTitle: song.title,
+      song,
+      singerInfo,
+      checkUserLiked,
+      checkUserFavorite,
+    });
+  }
+
+  // [GEt] /songs/like/:likeType/:songId
+  async likeCount(req: Request, res: Response) {
+    const user = req["user"];
+    const likeType = req.params.likeType;
+    const songId = req.params.songId;
+    const song = await Song.findOne({ deleted: false, _id: songId }).select(
+      "-lyrics",
+    );
+    const currentSongLikeCount = song.likeCount;
+    let newLikeCount = 0;
+    if (likeType === "no") {
+      newLikeCount = currentSongLikeCount - 1;
+      await Like.deleteOne({ userId: user.userId, songId: songId });
+    } else {
+      newLikeCount = currentSongLikeCount + 1;
+      const newLike = new Like({ userId: user.userId, songId: songId });
+      await newLike.save();
+    }
+    song["likeCount"] = newLikeCount;
+    await song.save();
+    return res.json({ currentSongLikeCount, newLikeCount })
   }
 }
 
