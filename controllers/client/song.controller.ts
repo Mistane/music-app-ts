@@ -53,9 +53,7 @@ class Controller {
     let checkUserFavorite = false;
     const user = res.locals.user;
     if (user) {
-      console.log("USer da log in");
       const liked = await Like.findOne({ userId: user.id, songId: song.id });
-      console.log(liked);
       if (liked) {
         checkUserLiked = true;
       }
@@ -108,6 +106,21 @@ class Controller {
     song["likeCount"] = newLikeCount;
     await song.save();
     return res.json({ currentSongLikeCount, newLikeCount })
+  }
+
+  //[GET] /songs/favorite/:type/:songId
+  async favorite(req: Request, res: Response){
+    const user = req["user"];
+    const type = req.params.type;
+    const songId = req.params.songId;
+    if (type === "no") {
+      await Favorite.deleteOne({ userId: user.userId, songId: songId });
+    } else {
+      const newFavorite = new Favorite({ userId: user.userId, songId: songId });
+      await newFavorite.save();
+    }
+    return res.json({msg : "ADDED_TO_FAVORITE"})
+
   }
 }
 

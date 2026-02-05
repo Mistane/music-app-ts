@@ -28,7 +28,7 @@ block main
             span #{song.likeCount} thích
             small(msg-display)
 
-          .inner-action.inner-heart
+          .inner-action.inner-heart(class=checkUserFavorite ? "yes" : "")
             button(class="btn-wrap btn-favorite" data-id=song.id)
               i.fa-regular.fa-heart
             |  Bài hát yêu thích

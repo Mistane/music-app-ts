@@ -131,9 +131,13 @@ if (btnLike) {
 const btnFavorite = document.querySelector(".btn-favorite");
 if (btnFavorite) {
   btnFavorite.addEventListener("click", async (e) => {
+    console.log("HELLo");
     const parentElement = btnFavorite.closest(".inner-action");
     const songId = btnFavorite.getAttribute("data-id");
-    const res = await authFetch(`/songs/like/yes/${songId}`);
+    const checkContain = parentElement.classList.contains("yes");
+    let type = "yes";
+    if (checkContain == true) type = "no";
+    const res = await authFetch(`/songs/favorite/${type}/${songId}`);
     if (res.error === "REQUIRE_LOGIN") {
       document
         .querySelectorAll("[msg-display]")
@@ -142,6 +146,7 @@ if (btnFavorite) {
       msgDisplay.innerText = "Ban can log in de su dung tinh nang";
       console.log("data tra ve : " + res);
     } else {
+      parentElement.classList.toggle("yes");
     }
   });
 }
@@ -153,7 +158,6 @@ if (btn) {
     if (!token) window.location.href = "/users/login";
     else {
       const data = await authFetch("/test", {
-        method: "POST",
         headers: {
           "Content-Type": "application/json",
           authorization: `bearer ${token}`,
