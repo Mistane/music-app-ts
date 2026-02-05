@@ -78,7 +78,6 @@ if (apContainer) {
   const dataContainer = document.querySelector(".inner-data");
   const data = JSON.parse(dataContainer.getAttribute("data-song"));
   const dataSinger = JSON.parse(dataContainer.getAttribute("data-singerInfo"));
-  console.log(dataSinger);
   const ap = new APlayer({
     container: apContainer,
     autoplay: true,
@@ -128,6 +127,7 @@ if (btnLike) {
   });
 }
 
+// --------------------favorite feature ---------------------
 const btnFavorite = document.querySelector(".btn-favorite");
 if (btnFavorite) {
   btnFavorite.addEventListener("click", async (e) => {
@@ -150,6 +150,45 @@ if (btnFavorite) {
     }
   });
 }
+
+// ------------------------search suggest songs-------------------
+const formSearch = document.querySelector("[form-search]");
+if (formSearch) {
+  formSearch.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const valueField = formSearch.querySelector("input");
+    if (valueField.value !== "") formSearch.submit();
+  });
+
+  const inputField = formSearch.querySelector("input");
+  inputField.addEventListener("keyup", async (e) => {
+    const res = await fetch(`/search/suggest?keyword=${inputField.value}`);
+    const data = await res.json();
+    const songs = data.songs;
+    const html = songs
+      .map((song) => {
+        return `<a class="inner-item" href="/songs/detail/${song.slug}">
+		  <div class="inner-image">
+		    <img src=${song.avatar}/></div>
+		  <div class="inner-info">
+		    <div class="inner-title">${song.title}</div>
+		    <div class="inner-singer">
+			<i class="fa-solid fa-microphone-lines"></i> ${song.singerInfo.fullName}
+		    </div>
+		  </div>
+		</a>`;
+      })
+      .join("");
+
+    const suggestContainer = document.querySelector(".inner-suggest");
+    suggestContainer.classList.add("show");
+    const suggestList = document.querySelector(".inner-list");
+    suggestList.innerHTML = html;
+  });
+}
+
+//-------------------search suggest---------------------
+
 // -----------------------------------------------------------
 const btn = document.querySelector("[test-btn]");
 if (btn) {

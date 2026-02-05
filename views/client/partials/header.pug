@@ -3,6 +3,18 @@ header.header
     .left
       a(href="/")
         img(src=(settings.logo || "/img/enaBday.jpg") height="100px" width="100px" class="header-img")
+    .middle(class="form-search")
+      form(
+        form-search
+        action="/search/result"
+        method="GET"
+      )
+        div(class="input-group")
+          input(type="text" name="keyword" value=keyword)
+          button(type="submit" class="btn btn-primary") Tìm
+      .inner-suggest
+        .inner-list
+
     .right
       ul.nav-list
         div
@@ -20,6 +32,8 @@ header.header
               a(href="/users/login")  Đăng nhập 
         else
           div
+            li.nav-item
+              a(href="/songs/user/favorite") Bài hát yêu thích
             li.nav-item
               a(href="/users/detail") #{user.fullName}
             li.nav-item

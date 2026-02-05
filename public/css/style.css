@@ -307,3 +307,80 @@ label {
   background: none;
   border: none;
 }
+
+/* --------------search suggest----------------- */
+.form-search {
+  position: relative;
+}
+.inner-suggest {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  margin-top: 8px;
+  z-index: 999;
+  display: none;
+  overflow: hidden;
+}
+
+/* show when typing */
+.inner-suggest.show {
+  display: block;
+}
+
+/* remove default link style */
+.inner-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.2s ease;
+  align-items: center;
+}
+
+/* hover effect like the picture */
+.inner-item:hover {
+  background: #f5f7fb;
+}
+
+/* image left */
+.inner-image img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* info right */
+.inner-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* title */
+.inner-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+/* singer line */
+.inner-singer {
+  font-size: 12px;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* icon color */
+.inner-singer i {
+  font-size: 11px;
+  color: #999;
+}

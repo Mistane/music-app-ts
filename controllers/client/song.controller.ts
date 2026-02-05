@@ -4,6 +4,7 @@ import Topic from "../../models/topic.model";
 import Song from "../../models/song.model";
 import Like from "../../models/like.model";
 import Favorite from "../../models/favorite.model";
+import User from "../../models/user.model";
 
 class Controller {
   //[GET] /songs
@@ -33,7 +34,6 @@ class Controller {
       const singerInfo = await Singer.findOne({ _id: song.singerId });
       song["singerInfo"] = singerInfo;
     }
-    console.log(songs);
     res.render("./client/pages/songs/list", {
       pageTitle: `Danh sách bài hát thuộc ${topic.title}`,
       songs,
@@ -75,7 +75,6 @@ class Controller {
 
     song["topic"] = topic;
     song["singerInfo"] = singerInfo;
-    console.log(song);
     res.render("./client/pages/songs/detail", {
       pageTitle: song.title,
       song,
@@ -105,11 +104,11 @@ class Controller {
     }
     song["likeCount"] = newLikeCount;
     await song.save();
-    return res.json({ currentSongLikeCount, newLikeCount })
+    return res.json({ currentSongLikeCount, newLikeCount });
   }
 
   //[GET] /songs/favorite/:type/:songId
-  async favorite(req: Request, res: Response){
+  async favoriteCheck(req: Request, res: Response) {
     const user = req["user"];
     const type = req.params.type;
     const songId = req.params.songId;
@@ -119,8 +118,31 @@ class Controller {
       const newFavorite = new Favorite({ userId: user.userId, songId: songId });
       await newFavorite.save();
     }
-    return res.json({msg : "ADDED_TO_FAVORITE"})
+    return res.json({ msg: "ADDED_TO_FAVORITE" });
+  }
 
+  // [GET] /songs/user/favorite
+  async favorite(req: Request, res: Response) {
+    const refreshToken = req.cookies["refreshToken"]
+    const user = await User.findOne({refreshTokens: refreshToken})
+    if (!user) return res.redirect("/users/login");
+    const favoriteSongs = await Favorite.find({
+      userId: user.id
+    });
+
+    const songs = [];
+    for(const favoriteRecord of favoriteSongs){
+	const song = await Song.findOne({_id : favoriteRecord.songId})
+	const singerInfo = await Singer.findOne({_id : song.singerId});
+      const liked = await Like.findOne({ userId: user.id, songId: song.id });
+	song["singerInfo"] = singerInfo;
+	if(liked) song["checkUserLiked"] = true;
+	songs.push(song)
+    }
+    res.render("./client/pages/songs/favorite", {
+      pageTitle: "Trang bài hát yêu thích",
+      songs: songs,
+    });
   }
 }
 

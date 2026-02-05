@@ -20,7 +20,8 @@
     "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.5",
-    "pug": "^3.0.3"
+    "pug": "^3.0.3",
+    "unidecode-plus": "^1.0.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
