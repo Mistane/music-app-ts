@@ -106,7 +106,6 @@ class Controller {
     }
 
     res.clearCookie("refreshToken");
-    console.log(req.cookies["refreshToken"]);
     res.redirect("/users/login");
   }
 

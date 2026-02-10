@@ -21,8 +21,10 @@ database.connect();
 
 //routes
 import clientRoutes from "./routes/client/index";
+import adminRoutes from "./routes/admin/index";
 
 clientRoutes(app);
+adminRoutes(app);
 
 app.listen(port, () => {
   console.log("Server running at port " + port);

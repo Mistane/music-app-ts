@@ -1,0 +1,23 @@
+header.header
+  .header-bar
+    .left
+      a(href="/")
+        img(src=(settings.logo || "/img/enaBday.jpg") height="100px" width="100px" class="header-img")
+    .right
+      ul.nav-list
+        div
+          li.nav-item
+            a(href="/") Trang chủ
+        if(!user)
+          div
+            li.nav-item
+              a(href="/users/register")  Đăng kí 
+            li.nav-item
+              a(href="/users/login")  Đăng nhập 
+        else
+          div
+            li.nav-item
+              a(href="/users/detail") #{user.fullName}
+            li.nav-item
+              a(href="/users/logout") Đăng xuất
+ 

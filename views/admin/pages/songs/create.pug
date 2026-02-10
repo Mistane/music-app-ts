@@ -1,0 +1,88 @@
+extends ../../layouts/default
+
+block main
+  h1 #{pageTitle}
+    
+  form(
+    action = `${prefixAdmin}/songs/create`
+    method="POST"
+    enctype="multipart/form-data"
+  )
+    div(class="form-group")
+      label(for="title") Tieu de
+      input(
+        class="form-control"
+        type="text"
+        id="title"
+        name="title"
+      )
+    div(class="form-group")
+      label(for="topic") Chu de
+      select(
+        name="topicId"
+        id="topic"
+        class="form-control"
+      )
+        option(value="" disabled selected) -- Chon chu de --
+        each topic in topics
+          option(value=topic.id) #{topic.title}
+    div(class="form-group")
+      label(for="singer") Chu de
+      select(
+        name="singerId"
+        id="singer"
+        class="form-control"
+      )
+        option(value="" disabled selected) -- Chon ca si --
+        each singer in singers
+          option(value=singer.id) #{singer.fullName}
+    div(class="form-group mt-4")
+      label(for="avatar") 
+      input(
+        type="file"
+        class="form-control-file"
+        id="avatar"
+        name="avatar"
+        accept="image/*"
+        upload-image-input
+      ) 
+      img(
+        src=""
+        class="image-preview"
+        upload-image-preview
+      )
+    div(class="form-group mt-4")
+      label(for="audio") 
+      input(
+        type="file"
+        class="form-control-file"
+        id="audio"
+        name="audio"
+        accept="audio/*"
+      ) 
+    div(class="form-group")
+      label(for="desc") Mo ta
+      textarea(
+        class="form-control"
+        type="text"
+        id="desc"
+        name="description"
+        rows="5"
+      )
+    div(class="form-group mt-3")
+      label(for="active") Hoat dong
+      input(
+        type="radio"
+        id="active"
+        name="status"
+        value="active"
+        selected
+      )
+      label(for="inactive") Dung hoat dong
+      input(
+        type="radio"
+        id="inactive"
+        name="status"
+        value="inactive"
+      )
+    button(class="btn btn-success") Tao moi

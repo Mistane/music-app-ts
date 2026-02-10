@@ -1,0 +1,32 @@
+extends ../../layouts/default
+block main
+  h1 Quan li chu de
+  
+  .card
+    a(href=`${prefixAdmin}/songs/create`) 
+      button(class="btn btn-sm btn-success") Tao moi
+    table.table.mt-5
+      thead
+        tr
+          th STT
+          th Hinh anh
+          th Tieu de
+          th Trang thai
+          th Hanh dong
+      tbody
+        each song, index in songs
+          tr
+            th #{index + 1}
+            th 
+              img(src=song.avatar style="width: 100px")
+            th #{song.title}
+            if(song.status === "active")
+              th
+                button(class="btn btn-sm btn-success") Hoat dong
+            else
+              th
+                button(class="btn btn-sm btn-danger") Dung hoat dong
+            th
+              button(class="btn-sm btn-secondary") Chi tiet
+              button(class="btn btn-sm btn-warning") Sua
+              button(class="btn btn-sm btn-danger") Xoa
